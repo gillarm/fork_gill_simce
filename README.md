@@ -212,6 +212,12 @@ T3  lectura dibujada en pantalla (hora del servidor)    ← latencia_ms = T3 −
 | `zona_horaria`, `utc_offset_min` | Debe ser `America/Mexico_City` y `-360` (UTC−6, sin horario de verano) |
 | `fin_periodo_cliente` vs `fecha_registro` | La diferencia valida que la corrección del reloj funciona |
 
+La página **Reporte** (`reporte.html`) muestra estos indicadores para las últimas 24 horas, 7 o
+30 días, por estación, con metas, gráficas de tendencia (p95 de latencia e integridad), tabla
+de resumen, verificación del reloj y la zona horaria, y exportación a CSV para entregarlos.
+Cada vez que se abre lee los registros del periodo (hasta 5000), lo que cuenta en la cuota de
+lecturas de Firestore (50 000 al día en el plan gratuito).
+
 Notas:
 - La latencia incluye la espera entre consultas (10 s en red local, 30 s con ThingSpeak).
 - Si el ESP32 no envía `created_at`, T0 es la hora de llegada a ThingSpeak y la latencia no
@@ -223,6 +229,7 @@ Notas:
 | Ruta | Contenido |
 |---|---|
 | `index.html`, `reservar.html`, `historial.html`, `monitoreo.html` | Páginas de las estaciones de carga |
+| `reporte.html`, `reporte.js` | Reporte de funcionamiento (indicadores de la colección `metricas`) |
 | `app.js` | Lógica compartida: Firebase, fuentes de monitoreo, sincronización temporal y estimación de carga |
 | `firestore.rules` | Reglas de seguridad de Firestore |
 | `raspberry/` | Configuración de Grafana/InfluxDB y servicio de systemd |
