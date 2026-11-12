@@ -189,6 +189,35 @@ firebase deploy --only hosting           # publicar en Firebase Hosting (usa Thi
 Edita siempre `firestore.rules` en el repositorio y despliega desde aquí. Si se modifican en
 la consola, el repositorio queda desactualizado.
 
+## Métricas de funcionamiento
+
+Mientras la página de **Monitoreo** está abierta, mide la **latencia extremo a extremo** de
+cada lectura nueva y guarda un resumen por estación cada 5 minutos en la colección
+`metricas` de Firestore:
+
+```
+T0  medición en el ESP32 (created_at / time, UTC)
+T1  llegada a ThingSpeak o InfluxDB
+T2  respuesta de la consulta a la página                ← consulta_ms = T2 − inicio de la consulta
+T3  lectura dibujada en pantalla (hora del servidor)    ← latencia_ms = T3 − T0
+```
+
+| Campo | Qué indica |
+|---|---|
+| `latencia_ms`, `latencia_p50_ms`, `latencia_p95_ms` | Latencia extremo a extremo (indicador principal) |
+| `consulta_ms`, `consulta_p95_ms` | Duración de la consulta a la fuente de datos |
+| `lecturas_nuevas`, `lecturas_invalidas`, `sin_datos_recientes`, `errores_consulta` | Integridad y disponibilidad |
+| `fuentes` | Consultas atendidas por Grafana y por ThingSpeak |
+| `desfase_reloj_ms`, `rtt_reloj_ms` | Desfase del reloj del equipo y tiempo de ida y vuelta a Firestore |
+| `zona_horaria`, `utc_offset_min` | Debe ser `America/Mexico_City` y `-360` (UTC−6, sin horario de verano) |
+| `fin_periodo_cliente` vs `fecha_registro` | La diferencia valida que la corrección del reloj funciona |
+
+Notas:
+- La latencia incluye la espera entre consultas (10 s en red local, 30 s con ThingSpeak).
+- Si el ESP32 no envía `created_at`, T0 es la hora de llegada a ThingSpeak y la latencia no
+  incluye el tramo ESP32 → nube (ver `esp32/ntp_timestamp.ino`).
+- Una latencia negativa indica que el reloj del ESP32 va adelantado respecto al servidor.
+
 ## Estructura
 
 | Ruta | Contenido |
