@@ -452,7 +452,9 @@
             kpi('Disponibilidad', Reporte.formatPct(s.disponibilidad), 'fa-plug', statusMin(s.disponibilidad, M.disponibilidad), s.consultas + ' consultas') +
             kpi('Datos recientes', Reporte.formatPct(s.recientes), 'fa-history', statusMin(s.recientes, M.recientes), 'meta ≥ ' + M.recientes + ' %') +
             kpi('Consulta a la fuente (p95)', Reporte.formatDuration(s.consultaP95), 'fa-exchange-alt', statusMax(s.consultaP95, 3000), 'meta ≤ 3 s') +
-            kpi('Atendido por Grafana', Reporte.formatPct(s.usoGrafana), 'fa-server', s.usoGrafana === null ? 'na' : 'info', 'resto: ThingSpeak') +
+            (s.usoGrafana > 0
+                ? kpi('Atendido por Grafana', Reporte.formatPct(s.usoGrafana), 'fa-server', 'info', 'resto: ThingSpeak')
+                : kpi('Resúmenes guardados', String(s.documentos), 'fa-database', 'info', 'cada 5 min por estación')) +
             kpi('Zona horaria correcta', Reporte.formatPct(s.zonaOk), 'fa-globe-americas', statusMin(s.zonaOk, 100), 'UTC−6');
 
         var ids = selectedStations();
