@@ -31,7 +31,7 @@ const App = {
         orgId: 1,
         theme: 'light',
         refresh: '5s',
-        from: 'now-5m',
+        from: 'now-2m',
         to: 'now',
         probeTimeoutMs: 4000,
         stations: {
